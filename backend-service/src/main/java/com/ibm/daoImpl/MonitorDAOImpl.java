@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.google.gson.JsonArray;
 import com.ibm.consants.BackendConstants;
 import com.ibm.dao.MonitorDAO;
 import com.ibm.exception.ServiceException;
@@ -14,10 +15,22 @@ public class MonitorDAOImpl extends BaseDAOImpl implements MonitorDAO {
 	@Override
 	public List<MonitorVO> getMonitorRecords(String param)throws ServiceException {
 		List<MonitorVO> monitorVOs = null;
-		getSearchResults(BackendConstants.MONITOR_DATASTORE, param);
 		
+		getSearchResults(BackendConstants.MONITOR_DATASTORE, param);
 		monitorVOs = (List<MonitorVO>) getDataList();
+		
 		return monitorVOs;
+	}
+	
+	@Override
+	public JsonArray getMonitorRecordsAsJson(String param)throws ServiceException {
+		JsonArray array = null;
+		
+		getSearchResultsWithOutPojo(BackendConstants.MONITOR_DATASTORE,param);
+		array = getRawDataLIst();
+		
+		
+		return array;
 	}
 
 	@Override
@@ -73,5 +86,4 @@ public class MonitorDAOImpl extends BaseDAOImpl implements MonitorDAO {
 
 		return seq.add(new BigDecimal(BackendConstants.SEQ_COUNTER));
 	}
-
 }

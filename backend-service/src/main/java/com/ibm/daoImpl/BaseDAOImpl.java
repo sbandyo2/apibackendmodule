@@ -29,6 +29,7 @@ import com.cloudant.client.api.views.ViewResponse;
 import com.cloudant.client.api.views.ViewResponse.Row;
 import com.cloudant.client.org.lightcouch.DocumentConflictException;
 import com.cloudant.client.org.lightcouch.NoDocumentException;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -42,7 +43,7 @@ import com.ibm.utils.ServiceUtils;
 public abstract class BaseDAOImpl implements BaseDAO {
 	
 	private List<Object> dataList = null;
-	private List<List <Object>> rawDataLIst = null;
+	private JsonArray jsonArray  = null;
 	
 	
 	/**
@@ -440,12 +441,12 @@ public abstract class BaseDAOImpl implements BaseDAO {
 	/* (non-Javadoc)
 	 * @see com.ibm.ariba.dataConfig.dao.BaseDAO#getSearchResultsWithOutPojo(java.lang.Object, java.lang.String, java.util.List)
 	 */
-	public  void getSearchResultsWithOutPojo(Object datastore, String param,List<String> colNames) throws ServiceException {
+	public void getSearchResultsWithOutPojo(Object datastore, String param) throws ServiceException {
 		// pause the process
-		pauseProcessForSearch();
+		//pauseProcessForSearch();
 		CloudantClient client = null;
 		client = new CloudantDBUtil().getCloudantContext();
-		getSearchResultsWithoiutPojo(client,datastore, param, null, null,colNames);
+		getSearchResultsWithoiutPojo(client,datastore, param, null, null);
 		
 		//shut down the client builder
 		client.shutdown();
@@ -560,17 +561,17 @@ public abstract class BaseDAOImpl implements BaseDAO {
 	 * @param colNames
 	 * @throws ServiceException
 	 */
-	private  void getSearchResultsWithoiutPojo(CloudantClient client , Object datastore, String param, List<List<Object>> list,
-			SearchResult<? extends Object> searchResult,List<String> colNames) throws ServiceException {
+	private void getSearchResultsWithoiutPojo(CloudantClient client , Object datastore, String param, JsonArray list,
+			SearchResult<? extends Object> searchResult) throws ServiceException {
 		
 		SearchResult<? extends Object> result = null;
 		Database db = null;
 		try {
 			
-			rawDataLIst = new ArrayList();
+			jsonArray = new JsonArray();
 
-			if (list != null && !list.isEmpty()) {
-				rawDataLIst.addAll(list);
+			if (list != null && list.size() >0) {
+				jsonArray = list;
 			}
 
 			if (datastore instanceof String) {
@@ -592,22 +593,13 @@ public abstract class BaseDAOImpl implements BaseDAO {
 				Object application = resultRow.getDoc();
 				JsonParser parser = new JsonParser(); 
 				
-				String formattedString = application.toString().replaceAll("=", "\"=\"").replaceAll(", ", "\",\"").replace("{", "{\"").replace("}", "\"}");
-				JsonObject json = (JsonObject) parser.parse(formattedString);
+				//String formattedString = application.toString().replaceAll("=", "\"=\"").replaceAll(", ", "\",\"").replace("{", "{\"").replace("}", "\"}");
+				//JsonObject json = (JsonObject) parser.parse(application.toString());
 				
-				List<Object> cols = new ArrayList<Object>();
 				
-				for(String colString : colNames){
-					if(json.has(colString)){
-						JsonElement unspsc = json.get(colString);
-						String val = unspsc.getAsString();
-						cols.add(val);
-						System.out.println(colString+" : "+val);
-					}
-				}
 				
 				//adding the cols
-				rawDataLIst.add(cols);
+				jsonArray.add(application.toString());;
 				
 			}
 
@@ -616,7 +608,7 @@ public abstract class BaseDAOImpl implements BaseDAO {
 				// 5 per second
 				pauseProcessForSearch();
 				//get the next book mark
-				getSearchResultsWithoiutPojo(client,db, param, rawDataLIst, result,colNames);
+				getSearchResultsWithoiutPojo(client,db, param, jsonArray, result);
 			}
 
 		} catch (NoDocumentException ex) {
@@ -1070,15 +1062,15 @@ public abstract class BaseDAOImpl implements BaseDAO {
 	/**
 	 * @return the rawDataLIst
 	 */
-	public List<List<Object>> getRawDataLIst() {
-		return rawDataLIst;
+	public JsonArray getRawDataLIst() {
+		return jsonArray;
 	}
 
 	/**
 	 * @param rawDataLIst the rawDataLIst to set
 	 */
-	public void setRawDataLIst(List<List<Object>> rawDataLIst) {
-		this.rawDataLIst = rawDataLIst;
+	public void setRawDataLIst(JsonArray jsonArray) {
+		this.jsonArray = jsonArray;
 	}
 
 	/**
@@ -1095,7 +1087,10 @@ public abstract class BaseDAOImpl implements BaseDAO {
 		this.dataList = dataList;
 	}
 
-	
+	public BaseDAOImpl(){
+		
+	}
 
+	
 
 }

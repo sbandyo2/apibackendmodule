@@ -116,7 +116,7 @@ public interface BaseDAO {
 	 * @param colNames
 	 * @throws ServiceException
 	 */
-	public  void getSearchResultsWithOutPojo(Object datastore, String param,List<String> colNames) throws ServiceException;
+	public  void getSearchResultsWithOutPojo(Object datastore, String param) throws ServiceException;
 	
 	
 }
