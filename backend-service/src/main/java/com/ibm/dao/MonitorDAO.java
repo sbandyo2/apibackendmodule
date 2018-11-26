@@ -4,7 +4,8 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.google.gson.JsonArray;
+import org.json.simple.JSONArray;
+
 import com.ibm.exception.ServiceException;
 import com.ibm.model.MonitorVO;
 
@@ -50,7 +51,7 @@ public interface MonitorDAO extends BaseDAO {
 	 * @return
 	 * @throws ServiceException
 	 */
-	public JsonArray getMonitorRecordsAsJson(String param)throws ServiceException;
+	public JSONArray getMonitorRecordsAsJson(String param)throws ServiceException;
 	
 	/**
 	 * @return

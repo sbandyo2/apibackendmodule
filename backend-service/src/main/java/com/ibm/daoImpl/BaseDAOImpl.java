@@ -5,11 +5,15 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import com.cloudant.client.api.CloudantClient;
 import com.cloudant.client.api.Database;
@@ -29,7 +33,6 @@ import com.cloudant.client.api.views.ViewResponse;
 import com.cloudant.client.api.views.ViewResponse.Row;
 import com.cloudant.client.org.lightcouch.DocumentConflictException;
 import com.cloudant.client.org.lightcouch.NoDocumentException;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -43,7 +46,7 @@ import com.ibm.utils.ServiceUtils;
 public abstract class BaseDAOImpl implements BaseDAO {
 	
 	private List<Object> dataList = null;
-	private JsonArray jsonArray  = null;
+	private JSONArray jsonArray  = null;
 	
 	
 	/**
@@ -561,14 +564,14 @@ public abstract class BaseDAOImpl implements BaseDAO {
 	 * @param colNames
 	 * @throws ServiceException
 	 */
-	private void getSearchResultsWithoiutPojo(CloudantClient client , Object datastore, String param, JsonArray list,
+	private void getSearchResultsWithoiutPojo(CloudantClient client , Object datastore, String param, JSONArray list,
 			SearchResult<? extends Object> searchResult) throws ServiceException {
 		
 		SearchResult<? extends Object> result = null;
 		Database db = null;
 		try {
 			
-			jsonArray = new JsonArray();
+			jsonArray = new JSONArray();
 
 			if (list != null && list.size() >0) {
 				jsonArray = list;
@@ -590,16 +593,35 @@ public abstract class BaseDAOImpl implements BaseDAO {
 			
 
 			for (SearchResult<? extends Object>.SearchResultRow resultRow : result.getRows()) {
-				Object application = resultRow.getDoc();
-				JsonParser parser = new JsonParser(); 
+				Map<Object, Object> rowObj =  (Map<Object, Object>) resultRow.getDoc();
+				//JsonParser parser = new JsonParser(); 
 				
-				//String formattedString = application.toString().replaceAll("=", "\"=\"").replaceAll(", ", "\",\"").replace("{", "{\"").replace("}", "\"}");
-				//JsonObject json = (JsonObject) parser.parse(application.toString());
+				JSONObject jsonRowObj = null;
+				String colKey = null;
+				Object colVal = null;
+				Set<Object> set  = null;
+				Iterator<Object> it = null;
 				
+				jsonRowObj =new JSONObject();
+				set = (Set<Object>) rowObj.keySet();
+				it = set.iterator();
 				
-				
+				while(it.hasNext()){
+					colKey = (String) it.next();
+					colVal =  rowObj.get(colKey);
+					
+					if(!"_id".equalsIgnoreCase(colKey) && !"_rev".equalsIgnoreCase(colKey) 
+							&& !"applicationType".equalsIgnoreCase(colKey)){
+						if(colVal instanceof String)
+							jsonRowObj.put(colKey.toString(), colVal.toString());
+						else
+							jsonRowObj.put(colKey.toString(), colVal);
+						
+					}
+					
+				}
 				//adding the cols
-				jsonArray.add(application.toString());;
+				jsonArray.add(jsonRowObj);
 				
 			}
 
@@ -1062,14 +1084,14 @@ public abstract class BaseDAOImpl implements BaseDAO {
 	/**
 	 * @return the rawDataLIst
 	 */
-	public JsonArray getRawDataLIst() {
+	public JSONArray getRawDataLIst() {
 		return jsonArray;
 	}
 
 	/**
 	 * @param rawDataLIst the rawDataLIst to set
 	 */
-	public void setRawDataLIst(JsonArray jsonArray) {
+	public void setRawDataLIst(JSONArray jsonArray) {
 		this.jsonArray = jsonArray;
 	}
 
