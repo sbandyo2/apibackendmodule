@@ -3,6 +3,7 @@ package com.ibm.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,21 @@ public class BackenedServiceController {
 	@Autowired
 	private MonitorDAO monitorDAO;
 
+	@RequestMapping(value = "/fetchResult", method = RequestMethod.POST)
+	public String gettTransactions(@RequestBody String param) {
+		logger.info("Starting database transaction ");
+
+		JSONArray jsonArray = null;
+		try {
+			jsonArray = monitorDAO.getMonitorRecordsAsJson(param);
+		} catch (ServiceException e) {
+			logger.error(e.getMessage());
+		}
+
+		logger.info("Finishing database  transaction ");
+		return jsonArray.toJSONString();
+	}
+	
 	@RequestMapping(value = "/dbinsert", method = RequestMethod.POST)
 	public String insertTransaction(@RequestBody MonitorVO monitorVO) {
 		logger.info("Starting database transaction ");

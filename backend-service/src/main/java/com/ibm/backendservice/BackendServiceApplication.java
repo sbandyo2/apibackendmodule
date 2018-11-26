@@ -9,10 +9,12 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.ApplicationPidFileWriter;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @SpringBootApplication
 @EnableEurekaClient
 @ComponentScan(basePackages = { "com.ibm.csaservice","com.ibm.controller"} )
+@CrossOrigin
 public class BackendServiceApplication {
 
 	Logger logger = LoggerFactory.getLogger(BackendServiceApplication.class);
