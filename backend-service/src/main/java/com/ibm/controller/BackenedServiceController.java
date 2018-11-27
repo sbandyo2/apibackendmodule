@@ -236,7 +236,7 @@ public class BackenedServiceController {
 		if(jsonObject.has("upstreamAppType") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("upstreamAppType"))){
 			
 			if(ServiceUtils.isNullOrEmpty(paramToSearch))
-				param ="applicationType:'"+jsonObject.getString("upstreamAppType")+"'";
+				paramToSearch ="applicationType:'"+jsonObject.getString("upstreamAppType")+"'";
 			else
 				paramToSearch =paramToSearch +" AND applicationType:'"+jsonObject.getString("upstreamAppType")+"'";
 			
@@ -244,20 +244,18 @@ public class BackenedServiceController {
 		if(jsonObject.has("upstreamTrasactionId") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("upstreamTrasactionId"))){
 			
 			if(ServiceUtils.isNullOrEmpty(paramToSearch))
-				param ="transactionID:'"+jsonObject.getString("upstreamTrasactionId")+"'";
+				paramToSearch ="transactionID:'"+jsonObject.getString("upstreamTrasactionId")+"'";
 			else
 				paramToSearch =paramToSearch +" AND transactionID:'"+jsonObject.getString("upstreamTrasactionId")+"'";
 		}
 		if(jsonObject.has("fromdate") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("fromdate"))){
 			
 			if(ServiceUtils.isNullOrEmpty(paramToSearch))
-				param ="createdTs:[\""+jsonObject.getString("fromdate")+"\" TO \""+jsonObject.getString("todate")+"\"]";
+				paramToSearch ="createdTs:[\""+jsonObject.getString("fromdate")+"\" TO \""+jsonObject.getString("todate")+"\"]";
 			else
 				paramToSearch =paramToSearch +" AND createdTs:[\""+jsonObject.getString("fromdate")+"\" TO \""+jsonObject.getString("todate")+"\"]";
 		}
 
 		return paramToSearch;
 	}
-	
-	
 }
