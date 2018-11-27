@@ -1,5 +1,6 @@
 package com.ibm.controller;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -37,6 +40,24 @@ public class BackenedServiceController {
 	@Autowired
 	private MonitorDAO monitorDAO;
 
+	@RequestMapping(value = "/getAttachment", method =RequestMethod.GET)
+    @GetMapping("/{fileId}")
+	public String gettContent(@PathVariable String fileId) {
+		logger.info("Starting database transaction ");
+
+		InputStream content = null;
+		StringBuffer  xmlContent = null;
+		try {
+			content = monitorDAO.getAttachmentForDownload(fileId);
+			xmlContent = ServiceUtils.getStringBuffer(content);
+		} catch (ServiceException e) {
+			logger.error(e.getMessage());
+		}
+
+		logger.info("Finishing database  transaction ");
+		return xmlContent.toString();
+	}
+	
 	@RequestMapping(value = "/fetchResult", method =RequestMethod.POST)
 	public String gettTransactions(@RequestBody String param) {
 		logger.info("Starting database transaction ");
