@@ -251,9 +251,9 @@ public class BackenedServiceController {
 		if(jsonObject.has("fromdate") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("fromdate"))){
 			
 			if(ServiceUtils.isNullOrEmpty(paramToSearch))
-				param ="createdTs:[\""+ServiceUtils.formatInputDate(jsonObject.getString("fromdate"))+"\" TO \""+ServiceUtils.formatInputDate(jsonObject.getString("todate"))+"\"]";
+				param ="createdTs:[\""+jsonObject.getString("fromdate")+"\" TO \""+jsonObject.getString("todate")+"\"]";
 			else
-				paramToSearch =paramToSearch +" AND createdTs:[\""+ServiceUtils.formatInputDate(jsonObject.getString("fromdate"))+"\" TO \""+ServiceUtils.formatInputDate(jsonObject.getString("todate"))+"\"]";
+				paramToSearch =paramToSearch +" AND createdTs:[\""+jsonObject.getString("fromdate")+"\" TO \""+jsonObject.getString("todate")+"\"]";
 		}
 
 		return paramToSearch;
