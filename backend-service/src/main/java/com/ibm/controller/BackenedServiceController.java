@@ -4,6 +4,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,12 +64,41 @@ public class BackenedServiceController {
 	
 	@RequestMapping(value = "/fetchResult", method =RequestMethod.POST)
 	public String gettTransactions(@RequestBody String param) {
-		logger.info("Starting database transaction with json param "+param);
-
+		logger.info("Starting database transaction with json param ");
+		//{"cartNo":"","upstreamTrasactionId":"","todate":"","fromdate":"","status":"","upstreamAppType":""}
 		JSONArray jsonArray = null;
+		JSONObject jsonObject = null;
+		String paramToSearch = null;
 		try {
-			jsonArray = monitorDAO.getMonitorRecordsAsJson(param);
-		} catch (ServiceException e) {
+			jsonObject = new JSONObject(param);
+			if(jsonObject.has("cartNo")){
+				
+				paramToSearch ="cartID:'"+jsonObject.getString("cartNo")+"'";
+			}else if(jsonObject.has("cartNo")){
+				if(ServiceUtils.isNullOrEmpty(paramToSearch))
+					paramToSearch ="status:'"+jsonObject.getString("status")+"'";
+				else
+					paramToSearch =paramToSearch +" AND status:'"+jsonObject.getString("status")+"'";
+				
+			}else if(jsonObject.has("upstreamAppType")){
+				
+				if(ServiceUtils.isNullOrEmpty(paramToSearch))
+					param ="applicationType:'"+jsonObject.getString("upstreamAppType")+"'";
+				else
+					paramToSearch =paramToSearch +" AND applicationType:'"+jsonObject.getString("upstreamAppType")+"'";
+				
+			}else if(jsonObject.has("upstreamTrasactionId")){
+				
+				if(ServiceUtils.isNullOrEmpty(paramToSearch))
+					param ="transactionID:'"+jsonObject.getString("upstreamTrasactionId")+"'";
+				else
+					paramToSearch =paramToSearch +" AND transactionID:'"+jsonObject.getString("upstreamTrasactionId")+"'";
+			}
+			
+			if(!ServiceUtils.isNullOrEmpty(paramToSearch))
+				jsonArray = monitorDAO.getMonitorRecordsAsJson(paramToSearch);
+			
+		} catch (ServiceException | JSONException e) {
 			logger.error(e.getMessage());
 		}
 
