@@ -67,33 +67,10 @@ public class BackenedServiceController {
 		logger.info("Starting database transaction with json param ");
 		//{"cartNo":"","upstreamTrasactionId":"","todate":"","fromdate":"","status":"","upstreamAppType":""}
 		JSONArray jsonArray = null;
-		JSONObject jsonObject = null;
+		
 		String paramToSearch = null;
 		try {
-			jsonObject = new JSONObject(param);
-			if(jsonObject.has("cartNo")){
-				
-				paramToSearch ="cartID:'"+jsonObject.getString("cartNo")+"'";
-			}else if(jsonObject.has("cartNo")){
-				if(ServiceUtils.isNullOrEmpty(paramToSearch))
-					paramToSearch ="status:'"+jsonObject.getString("status")+"'";
-				else
-					paramToSearch =paramToSearch +" AND status:'"+jsonObject.getString("status")+"'";
-				
-			}else if(jsonObject.has("upstreamAppType")){
-				
-				if(ServiceUtils.isNullOrEmpty(paramToSearch))
-					param ="applicationType:'"+jsonObject.getString("upstreamAppType")+"'";
-				else
-					paramToSearch =paramToSearch +" AND applicationType:'"+jsonObject.getString("upstreamAppType")+"'";
-				
-			}else if(jsonObject.has("upstreamTrasactionId")){
-				
-				if(ServiceUtils.isNullOrEmpty(paramToSearch))
-					param ="transactionID:'"+jsonObject.getString("upstreamTrasactionId")+"'";
-				else
-					paramToSearch =paramToSearch +" AND transactionID:'"+jsonObject.getString("upstreamTrasactionId")+"'";
-			}
+			paramToSearch = prepareParams(param);
 			
 			if(!ServiceUtils.isNullOrEmpty(paramToSearch))
 				jsonArray = monitorDAO.getMonitorRecordsAsJson(paramToSearch);
@@ -226,6 +203,42 @@ public class BackenedServiceController {
 	MonitorDAO monitorDAO()
 	{
 	    return new MonitorDAOImpl();
+	}
+	
+	/**
+	 * @param param
+	 * @return
+	 */
+	private String prepareParams(String param) {
+		JSONObject jsonObject = null;
+		jsonObject = new JSONObject(param);
+		String paramToSearch  = null;
+		if(jsonObject.has("cartNo")){
+			
+			paramToSearch ="cartID:'"+jsonObject.getString("cartNo")+"'";
+		}
+		else if(jsonObject.has("status")){
+			if(ServiceUtils.isNullOrEmpty(paramToSearch))
+				paramToSearch ="status:'"+jsonObject.getString("status")+"'";
+			else
+				paramToSearch =paramToSearch +" AND status:'"+jsonObject.getString("status")+"'";
+			
+		}
+		else if(jsonObject.has("upstreamAppType")){
+			
+			if(ServiceUtils.isNullOrEmpty(paramToSearch))
+				param ="applicationType:'"+jsonObject.getString("upstreamAppType")+"'";
+			else
+				paramToSearch =paramToSearch +" AND applicationType:'"+jsonObject.getString("upstreamAppType")+"'";
+			
+		}else if(jsonObject.has("upstreamTrasactionId")){
+			
+			if(ServiceUtils.isNullOrEmpty(paramToSearch))
+				param ="transactionID:'"+jsonObject.getString("upstreamTrasactionId")+"'";
+			else
+				paramToSearch =paramToSearch +" AND transactionID:'"+jsonObject.getString("upstreamTrasactionId")+"'";
+		}
+		return paramToSearch;
 	}
 	
 }
