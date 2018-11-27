@@ -10,6 +10,7 @@ import com.ibm.consants.BackendConstants;
 import com.ibm.dao.MonitorDAO;
 import com.ibm.exception.ServiceException;
 import com.ibm.model.MonitorVO;
+import com.ibm.utils.ServiceUtils;
 
 public class MonitorDAOImpl extends BaseDAOImpl implements MonitorDAO {
 
@@ -87,15 +88,5 @@ public class MonitorDAOImpl extends BaseDAOImpl implements MonitorDAO {
 			
 
 		return seq.add(new BigDecimal(BackendConstants.SEQ_COUNTER));
-	}
-
-	
-	public static void main(String[] args) {
-		try {
-			new MonitorDAOImpl().getMonitorRecordsAsJson("applicationType:'CSA'");
-		} catch (ServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 }
