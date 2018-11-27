@@ -64,13 +64,16 @@ public class BackenedServiceController {
 	
 	@RequestMapping(value = "/fetchResult", method =RequestMethod.POST)
 	public String gettTransactions(@RequestBody String param) {
-		logger.info("Starting database transaction with json param ");
-		//{"cartNo":"","upstreamTrasactionId":"","todate":"","fromdate":"","status":"","upstreamAppType":""}
+		logger.info("Starting database transaction  ");
+		
 		JSONArray jsonArray = null;
 		
 		String paramToSearch = null;
 		try {
 			paramToSearch = prepareParams(param);
+			
+			logger.info("Initiating search with param"+paramToSearch);
+			
 			
 			if(!ServiceUtils.isNullOrEmpty(paramToSearch))
 				jsonArray = monitorDAO.getMonitorRecordsAsJson(paramToSearch);
@@ -210,28 +213,31 @@ public class BackenedServiceController {
 	 * @return
 	 */
 	private String prepareParams(String param) {
+		
+		//{"cartNo":"","upstreamTrasactionId":"","todate":"","fromdate":"","status":"","upstreamAppType":""}
+		
 		JSONObject jsonObject = null;
 		jsonObject = new JSONObject(param);
 		String paramToSearch  = null;
-		if(jsonObject.has("cartNo")){
+		if(jsonObject.has("cartNo") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("cartNo"))){
 			
 			paramToSearch ="cartID:'"+jsonObject.getString("cartNo")+"'";
 		}
-		else if(jsonObject.has("status")){
+		else if(jsonObject.has("status") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("status"))){
 			if(ServiceUtils.isNullOrEmpty(paramToSearch))
 				paramToSearch ="status:'"+jsonObject.getString("status")+"'";
 			else
 				paramToSearch =paramToSearch +" AND status:'"+jsonObject.getString("status")+"'";
 			
 		}
-		else if(jsonObject.has("upstreamAppType")){
+		else if(jsonObject.has("upstreamAppType") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("upstreamAppType"))){
 			
 			if(ServiceUtils.isNullOrEmpty(paramToSearch))
 				param ="applicationType:'"+jsonObject.getString("upstreamAppType")+"'";
 			else
 				paramToSearch =paramToSearch +" AND applicationType:'"+jsonObject.getString("upstreamAppType")+"'";
 			
-		}else if(jsonObject.has("upstreamTrasactionId")){
+		}else if(jsonObject.has("upstreamTrasactionId") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("upstreamTrasactionId"))){
 			
 			if(ServiceUtils.isNullOrEmpty(paramToSearch))
 				param ="transactionID:'"+jsonObject.getString("upstreamTrasactionId")+"'";
