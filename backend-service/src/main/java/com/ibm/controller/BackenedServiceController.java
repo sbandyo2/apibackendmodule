@@ -62,7 +62,7 @@ public class BackenedServiceController {
 	
 	@RequestMapping(value = "/fetchResult", method =RequestMethod.POST)
 	public String gettTransactions(@RequestBody String param) {
-		logger.info("Starting database transaction ");
+		logger.info("Starting database transaction with json param "+param);
 
 		JSONArray jsonArray = null;
 		try {
