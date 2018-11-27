@@ -4,6 +4,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +43,7 @@ public class BackenedServiceController {
 	private MonitorDAO monitorDAO;
 
 	@RequestMapping(value = "/getAttachment/{fileId}", method =RequestMethod.GET)
-	public String gettContent(@PathVariable String fileId) {
+	public Response gettContent(@PathVariable String fileId) {
 		logger.info("Starting database transaction ");
 
 		InputStream content = null;
@@ -53,7 +56,7 @@ public class BackenedServiceController {
 		}
 
 		logger.info("Finishing database  transaction ");
-		return xmlContent.toString();
+		return Response.status(200).type(MediaType.TEXT_XML).entity(xmlContent.toString()).build();
 	}
 	
 	@RequestMapping(value = "/fetchResult", method =RequestMethod.POST)
