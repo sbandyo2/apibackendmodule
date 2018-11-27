@@ -4,14 +4,14 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,8 +43,8 @@ public class BackenedServiceController {
 	private MonitorDAO monitorDAO;
 
 	
-	@RequestMapping(value = "/getAttachment/{fileId}", method =RequestMethod.GET)
-	public Response gettContent(@PathVariable String fileId) {
+	@RequestMapping(value = "/getAttachment/{fileId}", method =RequestMethod.GET, produces = MediaType.APPLICATION_XML_VALUE)
+	public ResponseEntity<?> gettContent(@PathVariable String fileId) {
 		logger.info("Starting database transaction ");
 
 		InputStream content = null;
@@ -57,7 +57,7 @@ public class BackenedServiceController {
 		}
 
 		logger.info("Finishing database  transaction ");
-		return Response.status(200).type(MediaType.TEXT_XML).entity(xmlContent.toString()).build();
+		return ResponseEntity.status(HttpStatus.OK).body(xmlContent.toString());
 	}
 	
 	@RequestMapping(value = "/fetchResult", method =RequestMethod.POST)
