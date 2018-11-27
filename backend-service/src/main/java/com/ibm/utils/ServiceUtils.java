@@ -5,6 +5,10 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
@@ -31,6 +35,27 @@ public final class ServiceUtils {
 		System.out.println(formattedTs);
 		
 		return formattedTs;
+	}
+	
+	/**
+	 * @return
+	 */
+	public static String formatInputDate(String date){
+		DateFormat dateFormat = null;
+		Date srcDate = null;
+		String formattedDate = null;
+		try {
+			dateFormat = new SimpleDateFormat("mm/dd/yyyy");
+			srcDate = dateFormat.parse(date);
+			
+			dateFormat = new SimpleDateFormat("yyyy-mm-dd");
+			formattedDate =dateFormat.format(srcDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return	formattedDate;
 	}
 	
 	
