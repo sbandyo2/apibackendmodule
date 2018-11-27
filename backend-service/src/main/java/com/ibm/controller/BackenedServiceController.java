@@ -40,8 +40,7 @@ public class BackenedServiceController {
 	@Autowired
 	private MonitorDAO monitorDAO;
 
-	@RequestMapping(value = "/getAttachment", method =RequestMethod.GET)
-    @GetMapping("/{fileId}")
+	@RequestMapping(value = "/getAttachment/{fileId}", method =RequestMethod.GET)
 	public String gettContent(@PathVariable String fileId) {
 		logger.info("Starting database transaction ");
 
