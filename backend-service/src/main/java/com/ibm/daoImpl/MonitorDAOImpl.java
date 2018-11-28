@@ -89,4 +89,39 @@ public class MonitorDAOImpl extends BaseDAOImpl implements MonitorDAO {
 
 		return seq.add(new BigDecimal(BackendConstants.SEQ_COUNTER));
 	}
+	
+	@Override
+	public String getAppWiseCount(String appType) throws ServiceException {
+		BigDecimal count = null;
+		Object[] paramsObj = null;
+		String[] applications = null;
+		String countParam = null;
+		
+		if(appType!=null && appType.contains("~")){
+			applications	 = appType.split("~");
+			
+			for(String application : applications){
+				
+				paramsObj = new Object[] {application};
+				count = getCountWithParam(BackendConstants.MONITOR_DATASTORE, BackendConstants.CLOUDANT_VIEW_01,
+						BackendConstants.MONITOR_VIEWCOUNT_INDEX, paramsObj);
+				if(count== null)
+					count = new BigDecimal(0);
+				
+				if(ServiceUtils.isNullOrEmpty(countParam)){
+					countParam = "{"+count;
+				}else {
+					countParam = countParam + ","+  count;
+				}
+			}
+		}
+		
+		
+		countParam = countParam + "}";
+		
+		pauseProcess();
+			
+
+		return countParam;
+	}
 }

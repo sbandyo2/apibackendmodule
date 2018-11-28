@@ -58,4 +58,11 @@ public interface MonitorDAO extends BaseDAO {
 	 * @throws ServiceException
 	 */
 	public BigDecimal getNextSeq() throws ServiceException;
+	
+	/**
+	 * @param appType
+	 * @return
+	 * @throws ServiceException
+	 */
+	public String getAppWiseCount(String appType) throws ServiceException ;
 }

@@ -41,6 +41,9 @@ public class BackendConstants {
 	public static final String DOWNLOAD_ATTACHMENT = "downloadattachments";
 	public static final String MONITOR_DATASTORE = "monitor";
 	public static final String MONITOR_VIEW_INDEX = "vmonitor";
+	
+	public static final String MONITOR_VIEWCOUNT_INDEX = "vmonitorcount";
+	
 	public static final String RESPONSE = "response";
 	public static final String ERROR = "ERROR";
 	public static final String SUCCESS = "SUCCESS";

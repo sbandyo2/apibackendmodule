@@ -62,6 +62,24 @@ public class BackenedServiceController {
 		return ResponseEntity.status(HttpStatus.OK).body(xmlContent.toString());
 	}
 	
+	@RequestMapping(value = "/fetchAppsCount", method =RequestMethod.POST)
+	public String gettAppWiseCount(@RequestBody String param) {
+		logger.info("Starting database transaction  ");
+		String appCountStr = null;
+		try {
+			
+			logger.info("Initiating count string search with "+param);
+			appCountStr = monitorDAO.getAppWiseCount(param);
+			
+		} catch (ServiceException | JSONException e) {
+			logger.error(e.getMessage());
+		}
+
+		logger.info("Finishing database  transaction ");
+		
+		return appCountStr;
+	}
+	
 	@RequestMapping(value = "/fetchResult", method =RequestMethod.POST)
 	public String gettTransactions(@RequestBody String param) {
 		logger.info("Starting database transaction  ");

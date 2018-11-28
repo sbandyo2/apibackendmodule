@@ -100,6 +100,14 @@ public interface BaseDAO {
 	public BigDecimal getMaxWithParam(String datastore, String viewName, String viewIndex,Object[] param) throws ServiceException;
 	
 	
+	/**
+	 * @param datastore
+	 * @param viewName
+	 * @param viewIndex
+	 * @param params
+	 * @return
+	 */
+	public BigDecimal getCountWithParam(String datastore, String viewName, String viewIndex, Object[] params) throws ServiceException;
 	
 	/**
 	 * @param datastore

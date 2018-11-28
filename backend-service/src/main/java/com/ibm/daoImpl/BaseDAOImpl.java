@@ -1080,6 +1080,77 @@ public abstract class BaseDAOImpl implements BaseDAO {
 		return max;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.ibm.sp.dao.BaseDAO#getMaxWithParam(java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String)
+	 */
+	public BigDecimal getCountWithParam(String datastore, String viewName, String viewIndex, Object[] params)
+			throws ServiceException {
+		CloudantClient client = null;
+		Database db = null;
+		ViewRequestBuilder requestBuilder = null;
+		ViewRequest<ComplexKey, JsonObject> request = null;
+		ViewResponse<ComplexKey, JsonObject> response = null;
+		List<Row<ComplexKey, JsonObject>> rows = null;
+		JsonObject jsonObject = null;
+		BigDecimal max = null;
+		Key.ComplexKey keys = null;
+		try {
+
+			client = new CloudantDBUtil().getCloudantContext();
+			db = client.database(datastore, false);
+
+			requestBuilder = db.getViewRequestBuilder(viewName, viewIndex);
+
+			// set the complex keys
+			for (Object keyObj : params) {
+				if (keyObj instanceof String) {
+					if (keys == null)
+						keys = Key.complex(String.valueOf(keyObj));
+					else
+						keys.add(String.valueOf(keyObj));
+				} else if (keyObj instanceof Integer) {
+					if (keys == null)
+						keys = Key.complex(Integer.parseInt(String.valueOf(keyObj)));
+					else
+						keys.add(Integer.parseInt(String.valueOf(keyObj)));
+				} else if (keyObj instanceof Boolean) {
+					if (keys == null)
+						keys = Key.complex(Boolean.valueOf(String.valueOf(keyObj)));
+					else
+						keys.add(Boolean.valueOf(String.valueOf(keyObj)));
+				} else if (keyObj instanceof BigDecimal) {
+					if (keys == null)
+						keys = Key.complex(new BigDecimal(String.valueOf(keyObj)));
+					else
+						keys.add(new BigDecimal(String.valueOf(keyObj)));
+				}
+
+			}
+			request = requestBuilder.newRequest(Key.Type.COMPLEX, JsonObject.class).reduce(true).keys(keys).build();
+
+			response = request.getResponse();
+
+			rows = response.getRows();
+
+			for (Row<ComplexKey, JsonObject> resultRow : rows) {
+
+				jsonObject = resultRow.getValue();
+				max = new BigDecimal(String.valueOf(jsonObject.get(BackendConstants.CLOUDANT_COUNT_TYPE)));
+
+			}
+
+		} catch (NoDocumentException ex) {
+			throw new ServiceException(ex.getMessage());
+
+		} catch (IOException e) {
+			throw new ServiceException(e.getMessage());
+		}
+
+		return max;
+	}
 	
 	/**
 	 * @return the rawDataLIst
