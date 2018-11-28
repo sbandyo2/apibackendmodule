@@ -235,28 +235,29 @@ public class BackenedServiceController {
 		}
 		if(jsonObject.has("upstreamAppType") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("upstreamAppType"))){
 			
-			if(ServiceUtils.isNullOrEmpty(paramToSearch))
-				paramToSearch ="applicationType:'"+jsonObject.getString("upstreamAppType")+"'";
-			else
-				paramToSearch =paramToSearch +" AND applicationType:'"+jsonObject.getString("upstreamAppType")+"'";
+			String upstreamId = null;
+			upstreamId = jsonObject.getString("upstreamAppType");
 			
+			if(upstreamId.contains("(")){
+				
+				if(ServiceUtils.isNullOrEmpty(paramToSearch))
+					paramToSearch ="applicationType:"+jsonObject.getString("upstreamAppType");
+				else
+					paramToSearch =paramToSearch +" AND applicationType:"+jsonObject.getString("upstreamAppType");
+			} else {
+				
+				if(ServiceUtils.isNullOrEmpty(paramToSearch))
+					paramToSearch ="applicationType:'"+jsonObject.getString("upstreamAppType")+"'";
+				else
+					paramToSearch =paramToSearch +" AND applicationType:'"+jsonObject.getString("upstreamAppType")+"'";
+			}
 		}
 		if(jsonObject.has("upstreamTrasactionId") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("upstreamTrasactionId"))){
-			String upstreamId = null;
-			upstreamId = jsonObject.getString("upstreamTrasactionId");
-			
-			// for multiple applications
-			if(upstreamId.contains("(")){
-				if(ServiceUtils.isNullOrEmpty(paramToSearch))
-					paramToSearch ="transactionID:"+jsonObject.getString("upstreamTrasactionId")+"";
-				else
-					paramToSearch =paramToSearch +" AND transactionID:"+jsonObject.getString("upstreamTrasactionId")+"";
-			}else{
-				if(ServiceUtils.isNullOrEmpty(paramToSearch))
-					paramToSearch ="transactionID:'"+jsonObject.getString("upstreamTrasactionId")+"'";
-				else
-					paramToSearch =paramToSearch +" AND transactionID:'"+jsonObject.getString("upstreamTrasactionId")+"'";
-			}
+					
+			if(ServiceUtils.isNullOrEmpty(paramToSearch))
+				paramToSearch ="transactionID:'"+jsonObject.getString("upstreamTrasactionId")+"'";
+			else
+				paramToSearch =paramToSearch +" AND transactionID:'"+jsonObject.getString("upstreamTrasactionId")+"'";
 			
 		}
 		if(jsonObject.has("fromdate") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("fromdate"))){
