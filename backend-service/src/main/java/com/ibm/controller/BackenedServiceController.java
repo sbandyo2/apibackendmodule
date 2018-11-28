@@ -255,9 +255,9 @@ public class BackenedServiceController {
 		if(jsonObject.has("upstreamTrasactionId") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("upstreamTrasactionId"))){
 					
 			if(ServiceUtils.isNullOrEmpty(paramToSearch))
-				paramToSearch ="transactionID:'"+jsonObject.getString("upstreamTrasactionId")+"'";
+				paramToSearch ="applicationTransactionNumber:'"+jsonObject.getString("upstreamTrasactionId")+"'";
 			else
-				paramToSearch =paramToSearch +" AND transactionID:'"+jsonObject.getString("upstreamTrasactionId")+"'";
+				paramToSearch =paramToSearch +" AND applicationTransactionNumber:'"+jsonObject.getString("upstreamTrasactionId")+"'";
 			
 		}
 		if(jsonObject.has("fromdate") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("fromdate"))){
