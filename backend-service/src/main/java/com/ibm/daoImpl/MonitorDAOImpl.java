@@ -109,7 +109,7 @@ public class MonitorDAOImpl extends BaseDAOImpl implements MonitorDAO {
 					count = new BigDecimal(0);
 				
 				if(ServiceUtils.isNullOrEmpty(countParam)){
-					countParam = "{"+count;
+					countParam = "["+count;
 				}else {
 					countParam = countParam + ","+  count;
 				}
@@ -117,7 +117,7 @@ public class MonitorDAOImpl extends BaseDAOImpl implements MonitorDAO {
 		}
 		
 		
-		countParam = countParam + "}";
+		countParam = countParam + "]";
 		
 		pauseProcess();
 			
