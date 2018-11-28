@@ -242,11 +242,22 @@ public class BackenedServiceController {
 			
 		}
 		if(jsonObject.has("upstreamTrasactionId") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("upstreamTrasactionId"))){
+			String upstreamId = null;
+			upstreamId = jsonObject.getString("upstreamTrasactionId");
 			
-			if(ServiceUtils.isNullOrEmpty(paramToSearch))
-				paramToSearch ="transactionID:'"+jsonObject.getString("upstreamTrasactionId")+"'";
-			else
-				paramToSearch =paramToSearch +" AND transactionID:'"+jsonObject.getString("upstreamTrasactionId")+"'";
+			// for multiple applications
+			if(upstreamId.contains("(")){
+				if(ServiceUtils.isNullOrEmpty(paramToSearch))
+					paramToSearch ="transactionID:"+jsonObject.getString("upstreamTrasactionId")+"";
+				else
+					paramToSearch =paramToSearch +" AND transactionID:"+jsonObject.getString("upstreamTrasactionId")+"";
+			}else{
+				if(ServiceUtils.isNullOrEmpty(paramToSearch))
+					paramToSearch ="transactionID:'"+jsonObject.getString("upstreamTrasactionId")+"'";
+				else
+					paramToSearch =paramToSearch +" AND transactionID:'"+jsonObject.getString("upstreamTrasactionId")+"'";
+			}
+			
 		}
 		if(jsonObject.has("fromdate") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("fromdate"))){
 			
