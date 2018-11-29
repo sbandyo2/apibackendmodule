@@ -322,7 +322,7 @@ public final class ServiceUtils {
 					paramforSearch = paramStr + ")";
 				}
 			}else {
-				paramforSearch = param;
+				paramforSearch = "'"+param+"'";
 			}
 		}
 		return paramforSearch;
