@@ -47,4 +47,6 @@ public class BackendConstants {
 	public static final String RESPONSE = "response";
 	public static final String ERROR = "ERROR";
 	public static final String SUCCESS = "SUCCESS";
+	
+	public static final String SUPPLIER_INFO_DATASTORE = "supplierpartneringinfo";
 }

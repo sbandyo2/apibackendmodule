@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
+import org.json.JSONObject;
 
 import com.ibm.consants.BackendConstants;
 import com.ibm.exception.ServiceException;
@@ -230,5 +231,100 @@ public final class ServiceUtils {
 			value = properties.getProperty(key);
 
 		return value;
+	}
+	
+	/**
+	 * Sample Json :
+	 * "{\"cartNo\":\"PR10063\",\"upstreamTrasactionId\":\"\",\"todate\":\"\",\"fromdate\":\"\",\"status\":\"Success\",\"upstreamAppType\":\"CSATM\"}"
+	 * 
+	 * @param param
+	 * @return
+	 */
+	public static String prepareParams(String param) {
+		
+		
+		
+		JSONObject jsonObject = null;
+		jsonObject = new JSONObject(param);
+		String paramToSearch  = null;
+		if(jsonObject.has("cartNo") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("cartNo"))){
+			
+			paramToSearch ="cartID:'"+jsonObject.getString("cartNo")+"'";
+		}
+		if(jsonObject.has("status") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("status"))){
+			if(ServiceUtils.isNullOrEmpty(paramToSearch))
+				paramToSearch ="status:'"+jsonObject.getString("status")+"'";
+			else
+				paramToSearch =paramToSearch +" AND status:'"+jsonObject.getString("status")+"'";
+			
+		}
+		if(jsonObject.has("upstreamAppType") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("upstreamAppType"))){
+			
+			String upstreamId = null;
+			upstreamId = jsonObject.getString("upstreamAppType");
+			
+			if(upstreamId.contains("(")){
+				
+				if(ServiceUtils.isNullOrEmpty(paramToSearch))
+					paramToSearch ="applicationType:"+jsonObject.getString("upstreamAppType");
+				else
+					paramToSearch =paramToSearch +" AND applicationType:"+jsonObject.getString("upstreamAppType");
+			} else {
+				
+				if(ServiceUtils.isNullOrEmpty(paramToSearch))
+					paramToSearch ="applicationType:'"+jsonObject.getString("upstreamAppType")+"'";
+				else
+					paramToSearch =paramToSearch +" AND applicationType:'"+jsonObject.getString("upstreamAppType")+"'";
+			}
+		}
+		if(jsonObject.has("upstreamTrasactionId") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("upstreamTrasactionId"))){
+					
+			if(ServiceUtils.isNullOrEmpty(paramToSearch))
+				paramToSearch ="applicationTransactionNumber:'"+jsonObject.getString("upstreamTrasactionId")+"'";
+			else
+				paramToSearch =paramToSearch +" AND applicationTransactionNumber:'"+jsonObject.getString("upstreamTrasactionId")+"'";
+			
+		}
+		if(jsonObject.has("fromdate") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("fromdate"))){
+			
+			if(ServiceUtils.isNullOrEmpty(paramToSearch))
+				paramToSearch ="createdTs:[\""+jsonObject.getString("fromdate")+"\" TO \""+jsonObject.getString("todate")+"\"]";
+			else
+				paramToSearch =paramToSearch +" AND createdTs:[\""+jsonObject.getString("fromdate")+"\" TO \""+jsonObject.getString("todate")+"\"]";
+		}
+
+		return paramToSearch;
+	}
+	
+	
+	/**
+	 * @param param
+	 * @return
+	 */
+	public static String getParamsForSupplierSearch(String param) {
+		String paramforSearch = null;
+		String paramStr = null;
+		if(!ServiceUtils.isNullOrEmpty(param)){
+			if(param.contains(",")){
+				String [] suppIds = param.split(",");
+
+				for(String suppId : suppIds){
+					if(!ServiceUtils.isNullOrEmpty(suppId)){
+						if(ServiceUtils.isNullOrEmpty(paramStr)){
+							paramStr = "LocationID:('"+suppId+"'";
+						}else {
+							paramStr = paramStr + " OR '"+suppId+"'";
+						}	
+					}
+				}
+				
+				if(!ServiceUtils.isNullOrEmpty(paramStr)){
+					paramforSearch = paramStr + ")";
+				}
+			}else {
+				paramforSearch = param;
+			}
+		}
+		return paramforSearch;
 	}
 }

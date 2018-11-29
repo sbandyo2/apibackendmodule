@@ -21,13 +21,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.google.gson.JsonObject;
 import com.ibm.bean.VOWrapperDTO;
 import com.ibm.consants.BackendConstants;
 import com.ibm.dao.MonitorDAO;
+import com.ibm.dao.SupplierDAO;
 import com.ibm.daoImpl.MonitorDAOImpl;
 import com.ibm.exception.ServiceException;
 import com.ibm.model.MonitorVO;
 import com.ibm.model.QueryDetailsVO;
+import com.ibm.model.SupplierPartneringVO;
 import com.ibm.utils.ServiceUtils;
 import com.netflix.discovery.EurekaClient;
 
@@ -43,6 +46,9 @@ public class BackenedServiceController {
 	
 	@Autowired
 	private MonitorDAO monitorDAO;
+	
+	@Autowired
+	private SupplierDAO supplierDAO;
 
 	
 	@RequestMapping(value = "/getAttachment/{fileId}", method =RequestMethod.GET, produces = MediaType.APPLICATION_XML_VALUE)
@@ -62,6 +68,46 @@ public class BackenedServiceController {
 		return ResponseEntity.status(HttpStatus.OK).body(xmlContent.toString());
 	}
 	
+	
+	@RequestMapping(value = "/getSuppPartneringInfo", method =RequestMethod.POST)
+	public String getSupplierPrtneringInfo(@RequestBody String param) {
+		logger.info("Starting database transaction for partnering ");
+		JSONObject jsonObject = null;
+		String paramforSearch = null;
+		try {
+			
+			paramforSearch = ServiceUtils.getParamsForSupplierSearch(param);
+			
+			logger.info("Initiating search with param "+paramforSearch);
+			jsonObject = supplierDAO.getSupplierPartnering(paramforSearch);
+			
+		} catch (ServiceException | JSONException e) {
+			logger.error(e.getMessage());
+		}
+
+		logger.info("Finishing database  transaction for pertnering info ");
+		
+		return jsonObject.toString();
+	}
+	
+	@RequestMapping(value = "/getAribaSuppId", method =RequestMethod.POST)
+	public String getSupplierPrtneringID(@RequestBody String suppId) {
+		logger.info("Starting database transaction for partnering  ID");
+		String suppPartneringID = null;
+		try {
+			
+			suppPartneringID = supplierDAO.getAribaSupplierId(suppId);
+			
+		} catch (ServiceException | JSONException e) {
+			logger.error(e.getMessage());
+		}
+
+		logger.info("Finishing database  transaction for pertnering ID");
+		
+		return suppPartneringID;
+	}
+
+
 	@RequestMapping(value = "/fetchAppsCount", method =RequestMethod.POST)
 	public String gettAppWiseCount(@RequestBody String param) {
 		logger.info("Starting database transaction  ");
@@ -88,7 +134,7 @@ public class BackenedServiceController {
 		
 		String paramToSearch = null;
 		try {
-			paramToSearch = prepareParams(param);
+			paramToSearch = ServiceUtils.prepareParams(param);
 			
 			logger.info("Initiating search with param"+paramToSearch);
 			
@@ -224,68 +270,5 @@ public class BackenedServiceController {
 	MonitorDAO monitorDAO()
 	{
 	    return new MonitorDAOImpl();
-	}
-	
-	/**
-	 * Sample Json :
-	 * "{\"cartNo\":\"PR10063\",\"upstreamTrasactionId\":\"\",\"todate\":\"\",\"fromdate\":\"\",\"status\":\"Success\",\"upstreamAppType\":\"CSATM\"}"
-	 * 
-	 * @param param
-	 * @return
-	 */
-	private static String prepareParams(String param) {
-		
-		
-		
-		JSONObject jsonObject = null;
-		jsonObject = new JSONObject(param);
-		String paramToSearch  = null;
-		if(jsonObject.has("cartNo") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("cartNo"))){
-			
-			paramToSearch ="cartID:'"+jsonObject.getString("cartNo")+"'";
-		}
-		if(jsonObject.has("status") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("status"))){
-			if(ServiceUtils.isNullOrEmpty(paramToSearch))
-				paramToSearch ="status:'"+jsonObject.getString("status")+"'";
-			else
-				paramToSearch =paramToSearch +" AND status:'"+jsonObject.getString("status")+"'";
-			
-		}
-		if(jsonObject.has("upstreamAppType") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("upstreamAppType"))){
-			
-			String upstreamId = null;
-			upstreamId = jsonObject.getString("upstreamAppType");
-			
-			if(upstreamId.contains("(")){
-				
-				if(ServiceUtils.isNullOrEmpty(paramToSearch))
-					paramToSearch ="applicationType:"+jsonObject.getString("upstreamAppType");
-				else
-					paramToSearch =paramToSearch +" AND applicationType:"+jsonObject.getString("upstreamAppType");
-			} else {
-				
-				if(ServiceUtils.isNullOrEmpty(paramToSearch))
-					paramToSearch ="applicationType:'"+jsonObject.getString("upstreamAppType")+"'";
-				else
-					paramToSearch =paramToSearch +" AND applicationType:'"+jsonObject.getString("upstreamAppType")+"'";
-			}
-		}
-		if(jsonObject.has("upstreamTrasactionId") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("upstreamTrasactionId"))){
-					
-			if(ServiceUtils.isNullOrEmpty(paramToSearch))
-				paramToSearch ="applicationTransactionNumber:'"+jsonObject.getString("upstreamTrasactionId")+"'";
-			else
-				paramToSearch =paramToSearch +" AND applicationTransactionNumber:'"+jsonObject.getString("upstreamTrasactionId")+"'";
-			
-		}
-		if(jsonObject.has("fromdate") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("fromdate"))){
-			
-			if(ServiceUtils.isNullOrEmpty(paramToSearch))
-				paramToSearch ="createdTs:[\""+jsonObject.getString("fromdate")+"\" TO \""+jsonObject.getString("todate")+"\"]";
-			else
-				paramToSearch =paramToSearch +" AND createdTs:[\""+jsonObject.getString("fromdate")+"\" TO \""+jsonObject.getString("todate")+"\"]";
-		}
-
-		return paramToSearch;
 	}
 }
