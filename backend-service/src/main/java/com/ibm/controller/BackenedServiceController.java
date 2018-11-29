@@ -21,16 +21,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import com.google.gson.JsonObject;
 import com.ibm.bean.VOWrapperDTO;
 import com.ibm.consants.BackendConstants;
 import com.ibm.dao.MonitorDAO;
 import com.ibm.dao.SupplierDAO;
 import com.ibm.daoImpl.MonitorDAOImpl;
+import com.ibm.daoImpl.SupplierDAOImpl;
 import com.ibm.exception.ServiceException;
 import com.ibm.model.MonitorVO;
 import com.ibm.model.QueryDetailsVO;
-import com.ibm.model.SupplierPartneringVO;
 import com.ibm.utils.ServiceUtils;
 import com.netflix.discovery.EurekaClient;
 
@@ -270,5 +269,10 @@ public class BackenedServiceController {
 	MonitorDAO monitorDAO()
 	{
 	    return new MonitorDAOImpl();
+	}
+	
+	@Bean
+	SupplierDAO supplierDAO(){
+		return new SupplierDAOImpl();
 	}
 }
