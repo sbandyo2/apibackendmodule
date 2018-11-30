@@ -64,6 +64,6 @@ public class SupplierDAOImpl extends BaseDAOImpl implements SupplierDAO {
 	@Override
 	public InputStream getSuppAttachmentForDownload(String fileName)
 			throws ServiceException {
-		return getAttachment(BackendConstants.BATCH_FILES_DATASTORE, fileName);
+		return getAttachment(BackendConstants.BATCH_FILES_DATASTORE, fileName,BackendConstants.CSV);
 	}
 }

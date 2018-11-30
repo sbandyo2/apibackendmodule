@@ -56,7 +56,7 @@ public class MonitorDAOImpl extends BaseDAOImpl implements MonitorDAO {
 	@Override
 	public InputStream getAttachmentForDownload(String fileName)
 			throws ServiceException {
-		return getAttachment(BackendConstants.DOWNLOAD_ATTACHMENT, fileName);
+		return getAttachment(BackendConstants.DOWNLOAD_ATTACHMENT, fileName,BackendConstants.XML);
 	}
 
 	@Override

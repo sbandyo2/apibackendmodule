@@ -51,4 +51,5 @@ public class BackendConstants {
 	public static final String SUPPLIER_INFO_DATASTORE = "supplierpartneringinfo";
 	public static final String BATCH_FILES_DATASTORE = "batchattachments";
 	public static final String BATCH_TRACKER_DATASTORE = "batchtracker";
+	public static final String CSV = ".csv";
 }

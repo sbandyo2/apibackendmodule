@@ -124,7 +124,7 @@ public abstract class BaseDAOImpl implements BaseDAO {
 	 * @param fileName
 	 * @throws DownloadException
 	 */
-	public InputStream getAttachment(String dataStore,String fileName) throws ServiceException {
+	public InputStream getAttachment(String dataStore,String fileName,String attachment) throws ServiceException {
 		CloudantDBUtil cloudantDBUtil = null;
 		Database db = null;
 		InputStream  is = null;
@@ -144,7 +144,7 @@ public abstract class BaseDAOImpl implements BaseDAO {
 		db = cloudantDBUtil.getDB(dataStore,cloudantClient);
 
 		
-		is = db.getAttachment(fileName, fileName+BackendConstants.XML);
+		is = db.getAttachment(fileName, fileName+attachment);
 		
 		
 		cloudantDBUtil.closeConnection(cloudantClient);
