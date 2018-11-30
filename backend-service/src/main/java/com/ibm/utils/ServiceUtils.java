@@ -297,6 +297,23 @@ public final class ServiceUtils {
 	}
 	
 	
+	public static String prepareBatchParams(String param) {
+		
+		JSONObject jsonObject = null;
+		jsonObject = new JSONObject(param);
+		String paramToSearch  = null;
+		
+		if(jsonObject.has("fromdate") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("fromdate"))){
+			
+			if(ServiceUtils.isNullOrEmpty(paramToSearch))
+				paramToSearch ="date:[\""+jsonObject.getString("fromdate")+"\" TO \""+jsonObject.getString("todate")+"\"]";
+			else
+				paramToSearch =paramToSearch +" AND date:[\""+jsonObject.getString("fromdate")+"\" TO \""+jsonObject.getString("todate")+"\"]";
+		}
+
+		return paramToSearch;
+	}
+	
 	/**
 	 * @param param
 	 * @return

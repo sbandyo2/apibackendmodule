@@ -1,8 +1,10 @@
 package com.ibm.daoImpl;
 
+import java.io.InputStream;
 import java.util.List;
 
 import org.json.JSONObject;
+import org.json.simple.JSONArray;
 
 import com.ibm.consants.BackendConstants;
 import com.ibm.dao.SupplierDAO;
@@ -31,6 +33,18 @@ public class SupplierDAOImpl extends BaseDAOImpl implements SupplierDAO {
 		
 		return SupplierPartneringVO.class;
 	}
+	
+	@Override
+	public JSONArray getBatchRecordsAsJson(String param)throws ServiceException {
+		JSONArray array = null;
+		
+		getSearchResultsWithOutPojo(BackendConstants.BATCH_TRACKER_DATASTORE,param);
+		array = getRawDataLIst();
+		
+		
+		
+		return array;
+	}
 
 	@Override
 	public String getAribaSupplierId(String suppId) throws ServiceException {
@@ -45,5 +59,11 @@ public class SupplierDAOImpl extends BaseDAOImpl implements SupplierDAO {
 			return partneringVOs.get(0).getVendorID();
 		}else
 			return "";
+	}
+	
+	@Override
+	public InputStream getSuppAttachmentForDownload(String fileName)
+			throws ServiceException {
+		return getAttachment(BackendConstants.BATCH_FILES_DATASTORE, fileName);
 	}
 }

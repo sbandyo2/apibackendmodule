@@ -49,6 +49,46 @@ public class BackenedServiceController {
 	@Autowired
 	private SupplierDAO supplierDAO;
 
+	@RequestMapping(value = "/fetchBatchtrackerDetails", method =RequestMethod.POST)
+	public String gettBatchTrackerInfo(@RequestBody String param) {
+		logger.info("Starting database transaction  ");
+		
+		JSONArray jsonArray = null;
+		
+		String paramToSearch = null;
+		try {
+			paramToSearch = ServiceUtils.prepareBatchParams(param);
+			
+			logger.info("Initiating search with param"+paramToSearch);
+			
+			
+			if(!ServiceUtils.isNullOrEmpty(paramToSearch))
+				jsonArray = supplierDAO.getBatchRecordsAsJson(paramToSearch);
+			
+		} catch (ServiceException | JSONException e) {
+			logger.error(e.getMessage());
+		}
+
+		logger.info("Finishing database  transaction ");
+		return jsonArray.toJSONString();
+	}
+	
+	@RequestMapping(value = "/getCSVContent/{fileId}", method =RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
+	public ResponseEntity<?> gettCSV(@PathVariable String fileId) {
+		logger.info("Starting database transaction ");
+
+		InputStream content = null;
+		StringBuffer  xmlContent = null;
+		try {
+			content = supplierDAO.getSuppAttachmentForDownload(fileId);
+			xmlContent = ServiceUtils.getStringBuffer(content);
+		} catch (ServiceException e) {
+			logger.error(e.getMessage());
+		}
+
+		logger.info("Finishing database  transaction ");
+		return ResponseEntity.status(HttpStatus.OK).body(xmlContent.toString());
+	}
 	
 	@RequestMapping(value = "/getAttachment/{fileId}", method =RequestMethod.GET, produces = MediaType.APPLICATION_XML_VALUE)
 	public ResponseEntity<?> gettContent(@PathVariable String fileId) {
