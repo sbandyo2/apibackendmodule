@@ -241,7 +241,7 @@ public abstract class BaseDAOImpl implements BaseDAO {
 	/* (non-Javadoc)
 	 * @see com.ibm.ariba.dataConfig.dao.BaseDAO#saveWithDBAndIndex(java.lang.String, java.util.Map, java.util.List)
 	 */
-	public  void saveAttachment(String dataStore,String fileName,StringBuffer data) throws ServiceException {
+	public  void saveAttachment(String dataStore,String fileName,StringBuffer data,String fileType) throws ServiceException {
 		
 		CloudantDBUtil cloudantDBUtil = null;
 		Database db = null;
@@ -265,7 +265,7 @@ public abstract class BaseDAOImpl implements BaseDAO {
 		
 	        Document document = new Document();
 	        document.setId(fileName);
-	        document.addAttachment(fileName+BackendConstants.XML, attachment);
+	        document.addAttachment(fileName+fileType, attachment);
 	        
 	
 	        db.save(document);

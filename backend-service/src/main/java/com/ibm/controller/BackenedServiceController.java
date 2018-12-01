@@ -212,11 +212,18 @@ public class BackenedServiceController {
 		String msg = BackendConstants.SUCCESS;
 	
 		try {
-			if(voWrapperDTO.getRequestXml()!= null && !ServiceUtils.isNullOrEmpty(voWrapperDTO.getRequestXml().toString())){
-				monitorDAO.saveAsAttachment(voWrapperDTO.getFileName(), voWrapperDTO.getRequestXml());	
-			}else if(voWrapperDTO.getResponseXml()!= null && !ServiceUtils.isNullOrEmpty(voWrapperDTO.getResponseXml().toString())){
-				monitorDAO.saveAsAttachment(voWrapperDTO.getFileName(), voWrapperDTO.getResponseXml());
+			if(BackendConstants.XML.equalsIgnoreCase(voWrapperDTO.getFileType())){
+				if(voWrapperDTO.getRequestXml()!= null && !ServiceUtils.isNullOrEmpty(voWrapperDTO.getRequestXml().toString())){
+					monitorDAO.saveAsAttachment(voWrapperDTO.getFileName(), voWrapperDTO.getRequestXml(),voWrapperDTO.getFileType());	
+				}else if(voWrapperDTO.getResponseXml()!= null && !ServiceUtils.isNullOrEmpty(voWrapperDTO.getResponseXml().toString())){
+					monitorDAO.saveAsAttachment(voWrapperDTO.getFileName(), voWrapperDTO.getResponseXml(),voWrapperDTO.getFileType());
+				}
+			}else{
+				if(voWrapperDTO.getRecievedData()!= null && !ServiceUtils.isNullOrEmpty(voWrapperDTO.getRecievedData().toString())){
+					monitorDAO.saveAsAttachment(voWrapperDTO.getFileName(), voWrapperDTO.getRecievedData(),voWrapperDTO.getFileType());
+				}
 			}
+			
 		} catch (ServiceException e) {
 			logger.error(e.getMessage());
 			msg = BackendConstants.ERROR;
@@ -227,7 +234,7 @@ public class BackenedServiceController {
 	}
 	
 	
-	
+	/*
 	@RequestMapping(value = "/fetchDbRecord", method = RequestMethod.POST)
 	public VOWrapperDTO fetchTransaction(@RequestBody QueryDetailsVO queryDetailsVO) {
 		
@@ -256,9 +263,9 @@ public class BackenedServiceController {
 		logger.info("Finishing database  fetch transaction ");
 		
 		return transactionVO;
-	}
+	}*/
 	
-	@RequestMapping(value = "/updateDbRecord", method = RequestMethod.POST)
+	/*@RequestMapping(value = "/updateDbRecord", method = RequestMethod.POST)
 	public String updateTransaction(@RequestBody QueryDetailsVO queryDetailsVO) {
 		
 		logger.info("Starting database fetch transaction ");
@@ -273,7 +280,7 @@ public class BackenedServiceController {
 			fileName = monitorVO.getApplicationTransactionNumber()+"_"+BackendConstants.RESPONSE;
 			
 			//save the attachment
-			monitorDAO.saveAsAttachment(fileName, queryDetailsVO.getResponseXml());
+			monitorDAO.saveAsAttachment(fileName, queryDetailsVO.getResponseXml(),BackendConstants.XML);
 			
 			//set the response fileName
 			monitorVO.setResponseXmlID(fileName);
@@ -297,7 +304,7 @@ public class BackenedServiceController {
 		logger.info("Finishing database  fetch transaction ");
 		
 		return String.valueOf(monitorVO.getTransactionID());
-	}
+	}*/
 	
 	@Bean
 	public RestTemplate restTemplate() {

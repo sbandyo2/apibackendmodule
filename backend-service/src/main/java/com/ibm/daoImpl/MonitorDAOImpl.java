@@ -60,16 +60,19 @@ public class MonitorDAOImpl extends BaseDAOImpl implements MonitorDAO {
 	}
 
 	@Override
-	public void saveAsAttachment(String fileName, StringBuffer data)
+	public void saveAsAttachment(String fileName, StringBuffer data,String fType)
 			throws ServiceException {
 		//remove the attachment if any
 		removeAttachment(BackendConstants.DOWNLOAD_ATTACHMENT, fileName);
 		
 		pauseProcess();
 		//insert the record
-		saveAttachment(BackendConstants.DOWNLOAD_ATTACHMENT, fileName, data);
+		saveAttachment(BackendConstants.DOWNLOAD_ATTACHMENT, fileName, data,fType);
 		
 	}
+	
+	
+	
 
 	@Override
 	public Class<? extends Object> getPojoClass() {

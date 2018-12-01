@@ -43,7 +43,7 @@ public interface MonitorDAO extends BaseDAO {
 	 * @param data
 	 * @throws CDAException
 	 */
-	public void saveAsAttachment(String fileName, StringBuffer data)throws ServiceException ;
+	public void saveAsAttachment(String fileName, StringBuffer data,String fType) throws ServiceException ;
 	
 	
 	/**
