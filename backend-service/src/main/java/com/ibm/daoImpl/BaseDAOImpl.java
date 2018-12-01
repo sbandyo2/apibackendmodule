@@ -258,8 +258,13 @@ public abstract class BaseDAOImpl implements BaseDAO {
 		
 		db = cloudantDBUtil.getDB(dataStore,cloudantClient);
 
-			Attachment attachment = new Attachment(fileName,
-	                "text/xml");
+			Attachment attachment = null;
+			if(fileType.equalsIgnoreCase(BackendConstants.XML)){
+				attachment = new Attachment(fileName,"text/xml");
+			}else {
+				attachment = new Attachment(fileName,"aplication/json"); 
+			}
+					
 
 	        attachment.setData(Base64.encodeBase64String(data.toString().getBytes()));
 		
