@@ -65,4 +65,11 @@ public interface MonitorDAO extends BaseDAO {
 	 * @throws ServiceException
 	 */
 	public String getAppWiseCount(String appType) throws ServiceException ;
+	
+	/**
+	 * @param fileName
+	 * @return
+	 * @throws ServiceException
+	 */
+	public InputStream getJSONAttachmentForDownload(String fileName)throws ServiceException ;
 }

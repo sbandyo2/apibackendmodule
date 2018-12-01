@@ -1,8 +1,6 @@
 package com.ibm.controller;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,7 +27,6 @@ import com.ibm.daoImpl.MonitorDAOImpl;
 import com.ibm.daoImpl.SupplierDAOImpl;
 import com.ibm.exception.ServiceException;
 import com.ibm.model.MonitorVO;
-import com.ibm.model.QueryDetailsVO;
 import com.ibm.utils.ServiceUtils;
 import com.netflix.discovery.EurekaClient;
 
@@ -91,13 +88,30 @@ public class BackenedServiceController {
 	}
 	
 	@RequestMapping(value = "/getAttachment/{fileId}", method =RequestMethod.GET, produces = MediaType.APPLICATION_XML_VALUE)
-	public ResponseEntity<?> gettContent(@PathVariable String fileId) {
+	public ResponseEntity<?> getContent(@PathVariable String fileId) {
 		logger.info("Starting database transaction ");
 
 		InputStream content = null;
 		StringBuffer  xmlContent = null;
 		try {
 			content = monitorDAO.getAttachmentForDownload(fileId);
+			xmlContent = ServiceUtils.getStringBuffer(content);
+		} catch (ServiceException e) {
+			logger.error(e.getMessage());
+		}
+
+		logger.info("Finishing database  transaction ");
+		return ResponseEntity.status(HttpStatus.OK).body(xmlContent.toString());
+	}
+	
+	@RequestMapping(value = "/getJSONAttachment/{fileId}", method =RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> getJSONCOntentt(@PathVariable String fileId) {
+		logger.info("Starting database transaction ");
+
+		InputStream content = null;
+		StringBuffer  xmlContent = null;
+		try {
+			content = monitorDAO.getJSONAttachmentForDownload(fileId);
 			xmlContent = ServiceUtils.getStringBuffer(content);
 		} catch (ServiceException e) {
 			logger.error(e.getMessage());
@@ -207,7 +221,7 @@ public class BackenedServiceController {
 	
 	@RequestMapping(value = "/dbattachinsert", method = RequestMethod.POST)
 	public String insertAttachment(@RequestBody VOWrapperDTO voWrapperDTO) {
-		logger.info("Starting database transaction ");
+		logger.info("Starting database transaction for attachment saving");
 
 		String msg = BackendConstants.SUCCESS;
 	
@@ -217,6 +231,8 @@ public class BackenedServiceController {
 					monitorDAO.saveAsAttachment(voWrapperDTO.getFileName(), voWrapperDTO.getRequestXml(),voWrapperDTO.getFileType());	
 				}else if(voWrapperDTO.getResponseXml()!= null && !ServiceUtils.isNullOrEmpty(voWrapperDTO.getResponseXml().toString())){
 					monitorDAO.saveAsAttachment(voWrapperDTO.getFileName(), voWrapperDTO.getResponseXml(),voWrapperDTO.getFileType());
+				}else if(voWrapperDTO.getRecievedData()!= null && !ServiceUtils.isNullOrEmpty(voWrapperDTO.getRecievedData().toString())){
+					monitorDAO.saveAsAttachment(voWrapperDTO.getFileName(), voWrapperDTO.getRecievedData(),voWrapperDTO.getFileType());
 				}
 			}else{
 				if(voWrapperDTO.getRecievedData()!= null && !ServiceUtils.isNullOrEmpty(voWrapperDTO.getRecievedData().toString())){
@@ -229,82 +245,9 @@ public class BackenedServiceController {
 			msg = BackendConstants.ERROR;
 		}
 
-		logger.info("Finishing database  transaction ");
+		logger.info("Finishing database  transaction for attachment saving");
 		return msg;
 	}
-	
-	
-	/*
-	@RequestMapping(value = "/fetchDbRecord", method = RequestMethod.POST)
-	public VOWrapperDTO fetchTransaction(@RequestBody QueryDetailsVO queryDetailsVO) {
-		
-		logger.info("Starting database fetch transaction ");
-		
-		String param = null;
-		List<MonitorVO> monitorVOs = null;
-		VOWrapperDTO transactionVO = null;
-		
-		try {
-			
-			transactionVO = new VOWrapperDTO();
-			param = queryDetailsVO.getParam();
-		
-			monitorVOs = monitorDAO.getMonitorRecords(param);
-			
-			if(monitorVOs== null)
-				monitorVOs = new ArrayList<>();
-			
-			transactionVO.setMonitorVOs(monitorVOs);
-			
-		} catch (ServiceException e) {
-			logger.error("Exception happened during fetch "+e.getMessage() + " for query"+param);
-		}	
-		
-		logger.info("Finishing database  fetch transaction ");
-		
-		return transactionVO;
-	}*/
-	
-	/*@RequestMapping(value = "/updateDbRecord", method = RequestMethod.POST)
-	public String updateTransaction(@RequestBody QueryDetailsVO queryDetailsVO) {
-		
-		logger.info("Starting database fetch transaction ");
-		
-		String cartNumber = null;
-		String fileName = null;
-		String status = null;
-		MonitorVO monitorVO = null;
-		
-		try {
-			monitorVO = queryDetailsVO.getMonitorVO();
-			fileName = monitorVO.getApplicationTransactionNumber()+"_"+BackendConstants.RESPONSE;
-			
-			//save the attachment
-			monitorDAO.saveAsAttachment(fileName, queryDetailsVO.getResponseXml(),BackendConstants.XML);
-			
-			//set the response fileName
-			monitorVO.setResponseXmlID(fileName);
-			
-			cartNumber = monitorVO.getCartID();
-			
-			if(ServiceUtils.isNullOrEmpty(cartNumber))
-				status = BackendConstants.ERROR;
-			else
-				status = BackendConstants.SUCCESS;
-			//set the status
-			monitorVO.setStatus(status);
-			
-			//update the transaction
-			monitorDAO.updateMonitorRecords(monitorVO);
-			
-		} catch (ServiceException e) {
-			logger.error("Exception happened during update "+e.getMessage() + " for ID "+monitorVO.getApplicationTransactionNumber());
-		}	
-		
-		logger.info("Finishing database  fetch transaction ");
-		
-		return String.valueOf(monitorVO.getTransactionID());
-	}*/
 	
 	@Bean
 	public RestTemplate restTemplate() {

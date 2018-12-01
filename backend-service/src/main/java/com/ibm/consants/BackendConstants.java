@@ -37,6 +37,7 @@ public class BackendConstants {
 	public static final String DEFAULT_LOCALE = "enUS";
 	public static final String nullData = "nullData";
 	public static final String XML = ".xml";
+	public static final String JSON = ".json";
 	
 	public static final String DOWNLOAD_ATTACHMENT = "downloadattachments";
 	public static final String MONITOR_DATASTORE = "monitor";
