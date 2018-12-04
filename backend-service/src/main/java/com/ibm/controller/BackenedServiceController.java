@@ -179,6 +179,23 @@ public class BackenedServiceController {
 		return appCountStr;
 	}
 	
+	@RequestMapping(value = "/fetchAppsStatusCount", method =RequestMethod.POST)
+	public String gettAppWiseStatusCount(@RequestBody String param) {
+		logger.info("Starting database transaction for application "+param);
+		String appCountStr = null;
+		try {
+			
+			appCountStr = monitorDAO.getAppWiseStatusCount(param);
+			
+		} catch (ServiceException | JSONException e) {
+			logger.error(e.getMessage());
+		}
+
+		logger.info("Finishing database  transaction ");
+		
+		return appCountStr;
+	}
+	
 	@RequestMapping(value = "/fetchResult", method =RequestMethod.POST)
 	public String gettTransactions(@RequestBody String param) {
 		logger.info("Starting database transaction  ");

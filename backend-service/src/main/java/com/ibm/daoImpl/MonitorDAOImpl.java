@@ -130,4 +130,40 @@ public class MonitorDAOImpl extends BaseDAOImpl implements MonitorDAO {
 
 		return countParam;
 	}
+	
+	@Override
+	public String getAppWiseStatusCount(String appType) throws ServiceException {
+		BigDecimal count = null;
+		Object[] paramsObj = null;
+		String[] status = null;
+		String countParam = null;
+		String statusCode = "SUCCESS~ERROR";
+		if(statusCode!=null && statusCode.contains("~")){
+			status	 = statusCode.split("~");
+			
+			for(String statusCd : status){
+				
+				paramsObj = new Object[] {statusCd,appType};
+				count = getCountWithParam(BackendConstants.MONITOR_DATASTORE, BackendConstants.CLOUDANT_VIEW_01,
+						BackendConstants.MONITOR_VIEWSTATUS_INDEX, paramsObj);
+				if(count== null)
+					count = new BigDecimal(0);
+				
+				if(ServiceUtils.isNullOrEmpty(countParam)){
+					countParam = "["+count;
+				}else {
+					countParam = countParam + ","+  count;
+				}
+			
+		}
+		
+		
+		countParam = countParam + "]";
+		
+		pauseProcess();
+		}	
+
+		return countParam;
+	}
+	
 }
