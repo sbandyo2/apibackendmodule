@@ -184,12 +184,12 @@ public class MonitorDAOImpl extends BaseDAOImpl implements MonitorDAO {
 				countParam = countParam + ","+  count;
 			}
 				
-			
+			pauseProcess();
 		}
 				
 		countParam = countParam + "]";
 		
-		pauseProcess();
+		
 
 		return countParam;
 	}
