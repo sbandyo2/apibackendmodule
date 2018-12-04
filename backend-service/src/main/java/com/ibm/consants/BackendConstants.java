@@ -22,6 +22,7 @@ public class BackendConstants {
 	public static final String DB_SEARCH_ERROR = "Please specify valid Doc ID";
 	public static final int INDEX_ZERO = 0;
 	public static final int THREAD_SLEEP_TIME = 100;
+	public static final int THREAD_SLEEP_TIME_DASH = 200;
 	public static final int THREAD__SEARCH_SLEEP_TIME = 100; //250
 	public static final int TD_LIMIT = 2;
 	public static final String EMAIL_AT = "@";

@@ -360,7 +360,7 @@ public final class ServiceUtils {
 	    
 	    int maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);*/
 	    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-	    for (int i = 1; i < 31; i++) {
+	    for (int i = 0; i < 31; i++) {
 	        cal.set(Calendar.DAY_OF_MONTH, i + 1);
 	        currentDtaes.add(df.format(cal.getTime()));
 	    }

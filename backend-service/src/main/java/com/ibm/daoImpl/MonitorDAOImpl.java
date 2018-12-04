@@ -2,6 +2,9 @@ package com.ibm.daoImpl;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.json.simple.JSONArray;
@@ -169,6 +172,7 @@ public class MonitorDAOImpl extends BaseDAOImpl implements MonitorDAO {
 	public String getAppWiseMonthlyCount(String appType) throws ServiceException {
 		BigDecimal count = null;
 		Object[] paramsObj = null;
+		String[] status = null;
 		String countParam = null;
 		
 		for(String date : ServiceUtils.getDays()){
@@ -183,15 +187,26 @@ public class MonitorDAOImpl extends BaseDAOImpl implements MonitorDAO {
 			}else {
 				countParam = countParam + ","+  count;
 			}
-				
-			pauseProcess();
+			pauseProcessLong();
+			
 		}
 				
+		
 		countParam = countParam + "]";
 		
 		
 
 		return countParam;
+	}
+	
+	public static void main(String[] args) {
+		try {
+			  
+			System.out.println(new MonitorDAOImpl().getAppWiseMonthlyCount("CSAFP"));;
+		} catch (ServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 }

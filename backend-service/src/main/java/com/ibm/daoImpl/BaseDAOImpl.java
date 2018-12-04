@@ -347,6 +347,16 @@ public abstract class BaseDAOImpl implements BaseDAO {
 		}
 	}
 	
+	/**
+	 * @throws ServiceException
+	 */
+	public void pauseProcessLong() throws ServiceException{
+		try {
+			Thread.sleep(BackendConstants.THREAD_SLEEP_TIME_DASH);
+		} catch (InterruptedException e) {
+			throw new ServiceException(e.getMessage());
+		}
+	}
 	/* (non-Javadoc)
 	 * @see com.ibm.sp.dao.BaseDAO#doUpdate(java.lang.String, java.lang.String)
 	 */
