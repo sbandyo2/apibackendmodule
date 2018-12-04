@@ -165,5 +165,35 @@ public class MonitorDAOImpl extends BaseDAOImpl implements MonitorDAO {
 
 		return countParam;
 	}
+	@Override
+	public String getAppWiseMonthlyCount(String appType) throws ServiceException {
+		BigDecimal count = null;
+		Object[] paramsObj = null;
+		String countParam = null;
+		
+		for(String date : ServiceUtils.getDays()){
+			paramsObj = new Object[] {date,appType};
+			count = getCountWithParam(BackendConstants.MONITOR_DATASTORE, BackendConstants.CLOUDANT_VIEW_01,
+					BackendConstants.MONITOR_MONTH_INDEX, paramsObj);
+			if(count== null)
+				count = new BigDecimal(0);
+			
+			if(ServiceUtils.isNullOrEmpty(countParam)){
+				countParam = "["+count;
+			}else {
+				countParam = countParam + ","+  count;
+			}
+				
+			
+		}
+				
+		countParam = countParam + "]";
+		
+		pauseProcess();
+
+		return countParam;
+	}
 	
 }
+
+

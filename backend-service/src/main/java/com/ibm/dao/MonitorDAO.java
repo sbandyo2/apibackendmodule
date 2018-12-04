@@ -80,4 +80,11 @@ public interface MonitorDAO extends BaseDAO {
 	 * @throws ServiceException
 	 */
 	public String getAppWiseStatusCount(String appType) throws ServiceException;
+	
+	/**
+	 * @param appType
+	 * @return
+	 * @throws ServiceException
+	 */
+	public String getAppWiseMonthlyCount(String appType) throws ServiceException;
 }

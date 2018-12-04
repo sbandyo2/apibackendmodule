@@ -45,6 +45,7 @@ public class BackendConstants {
 	
 	public static final String MONITOR_VIEWCOUNT_INDEX = "vmonitorcount";
 	public static final String MONITOR_VIEWSTATUS_INDEX = "vstatuscount";
+	public static final String MONITOR_MONTH_INDEX = "vmonthcount";
 	
 	public static final String RESPONSE = "response";
 	public static final String ERROR = "ERROR";

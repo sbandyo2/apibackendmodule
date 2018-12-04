@@ -8,7 +8,10 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
@@ -343,5 +346,25 @@ public final class ServiceUtils {
 			}
 		}
 		return paramforSearch;
+	}
+	
+	/**
+	 * @return
+	 */
+	public static  List<String> getDays(){
+	List<String> currentDtaes = null;
+	  currentDtaes = new ArrayList<String>();
+	  Calendar cal = Calendar.getInstance();
+	  cal.set(Calendar.DAY_OF_MONTH, 1);
+	    /*cal.set(Calendar.MONTH, 1);
+	    
+	    int maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);*/
+	    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+	    for (int i = 1; i < 31; i++) {
+	        cal.set(Calendar.DAY_OF_MONTH, i + 1);
+	        currentDtaes.add(df.format(cal.getTime()));
+	    }
+	    
+	    return currentDtaes;
 	}
 }
