@@ -38,6 +38,13 @@ public interface SupplierDAO  extends BaseDAO{
 	 */
 	public JSONArray getBatchRecordsAsJson(String param)throws ServiceException;
 	
+	/**
+	 * @param param
+	 * @return
+	 * @throws ServiceException
+	 */
+	public JSONArray getSuppPartnerInfo(String param)throws ServiceException;
+	
 	
 	
 }

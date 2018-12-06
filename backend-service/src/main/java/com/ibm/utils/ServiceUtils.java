@@ -299,6 +299,29 @@ public final class ServiceUtils {
 		return paramToSearch;
 	}
 	
+	/**
+	 * Sample Json :
+	 * "{\"suppId\":\"12345678\"}"
+	 * 
+	 * @param param
+	 * @return
+	 */
+	public static String prepareParamsForLocationId(String param) {
+		
+		
+		
+		JSONObject jsonObject = null;
+		jsonObject = new JSONObject(param);
+		String paramToSearch  = null;
+		if(jsonObject.has("suppId") && !ServiceUtils.isNullOrEmpty(jsonObject.getString("suppId"))){
+			
+			paramToSearch ="LocationID:'"+jsonObject.getString("suppId")+"'";
+		}
+	
+
+		return paramToSearch;
+	}
+	
 	
 	public static String prepareBatchParams(String param) {
 		

@@ -14,6 +14,8 @@ import java.util.Set;
 import org.apache.commons.codec.binary.Base64;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import com.cloudant.client.api.CloudantClient;
 import com.cloudant.client.api.Database;
@@ -843,74 +845,7 @@ public abstract class BaseDAOImpl implements BaseDAO {
 		return count;
 	}
 	
-	/**
-	 * @param datastore
-	 * @param colNames
-	 * @return
-	 * @throws ServiceException
-	 */
-	public  List<List <Object>> getAllRecordsWithOutPojo(String datastore,List<String> colNames) throws ServiceException {
-		CloudantClient client = null;
-		Database db = null;
-		AllDocsRequestBuilder requestBuilder = null;
-		AllDocsRequest request = null;
-		AllDocsResponse response = null;
-		List<? extends Object> rows = null;
-		List<List <Object>> tempDataList = null;
-		try {
-
-			client = new CloudantDBUtil().getCloudantContext();
-			db = client.database(datastore, false);
-			requestBuilder = db.getAllDocsRequestBuilder();
-			request = requestBuilder.includeDocs(true).build();
-
-			tempDataList = new ArrayList<List<Object>>();
-			
-			response = request.getResponse();
-
-			rows = response.getDocsAs(Object.class);
-			
-			for(Object row : rows){
-				
-				
-				JsonParser parser = new JsonParser(); 
-			
-				if(!row.toString().contains("_design/_search")){
-					String formattedString = row.toString().replaceAll("=", "\"=\"").replaceAll(", ", "\",\"").replace("{", "{\"").replace("}", "\"}");
-					JsonObject json = (JsonObject) parser.parse(formattedString);
-					
-					List<Object> cols = new ArrayList<Object>();
-					
-					for(String colString : colNames){
-						if(json.has(colString)){
-							JsonElement unspsc = json.get(colString);
-							String val = unspsc.getAsString();
-							//converting the booleans in the upper case
-							if("true".equalsIgnoreCase(val) || "false".equalsIgnoreCase(val)){
-								cols.add(val.toUpperCase());
-							}else
-								cols.add(val);
-						}
-					}
-					
-					//adding the cols
-					tempDataList.add(cols);
-				}
-				
-			}
-
-		} catch (NoDocumentException ex) {
-			throw new ServiceException(ex.getMessage());
-
-		} catch (IOException e) {
-			throw new ServiceException(e.getMessage());
-		}finally{
-			if(client!=null)
-				client.shutdown();
-		}
-
-		return tempDataList;
-	}
+	
 	
 	/**
 	 * @param datastore
@@ -1019,7 +954,7 @@ public abstract class BaseDAOImpl implements BaseDAO {
 			if(client!=null)
 				client.shutdown();
 		}
-
+		
 		return rows;
 	}
 

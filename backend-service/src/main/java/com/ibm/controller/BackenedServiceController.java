@@ -143,6 +143,28 @@ public class BackenedServiceController {
 		return jsonObject.toString();
 	}
 	
+	@RequestMapping(value = "/getSuppPartners", method =RequestMethod.POST)
+	public String getSupplierPartners(@RequestBody String param) {
+		logger.info("Starting database transaction for partnering ");
+		JSONArray jsonArray = null;
+		String paramforSearch = null;
+		try {
+			
+			paramforSearch = ServiceUtils.prepareParamsForLocationId(param);
+			
+			logger.info("Initiating search with param "+paramforSearch);
+			jsonArray = supplierDAO.getSuppPartnerInfo(paramforSearch);
+			
+		} catch (ServiceException | JSONException e) {
+			logger.error(e.getMessage());
+		}
+
+		logger.info("Finishing database  transaction for pertnering info ");
+		
+		return jsonArray.toString();
+	}
+	
+	
 	@RequestMapping(value = "/getAribaSuppId", method =RequestMethod.POST)
 	public String getSupplierPrtneringID(@RequestBody String suppId) {
 		logger.info("Starting database transaction for partnering  ID");
